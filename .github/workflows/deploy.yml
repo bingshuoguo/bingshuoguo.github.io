@@ -31,8 +31,7 @@ jobs:
           node-version: "24"
 
       - name: Install dependencies
-        # Avoid the npm cli crash seen on the runner's default Node 22 image.
-        run: npm install --no-audit --no-fund
+        run: npm ci
 
       - name: Build
         run: npm run build
