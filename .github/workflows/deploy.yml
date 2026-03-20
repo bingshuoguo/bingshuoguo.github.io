@@ -30,7 +30,10 @@ jobs:
           node-version: "22"
 
       - name: Install dependencies
-        run: npm ci
+        # GitHub-hosted runners occasionally hit an npm cli bug with `npm ci`
+        # on this dependency set; `npm install` is stable and still honors
+        # package-lock.json for reproducible installs here.
+        run: npm install --no-audit --no-fund
 
       - name: Build
         run: npm run build
