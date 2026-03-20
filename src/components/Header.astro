@@ -1,0 +1,146 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+
+const navItems = [
+  { href: '/', label: '首页' },
+  { href: '/blog', label: '博客' },
+  { href: '/tags', label: '标签' },
+  { href: '/projects', label: '项目' },
+  { href: '/about', label: '关于' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 transition-colors duration-300">
+  <div class="h-16 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+    <div class="max-w-4xl mx-auto px-6 h-full flex items-center justify-between">
+      <a href="/" class="text-xl font-bold tracking-tight text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Echo's Blog</a>
+
+      <nav class="hidden sm:flex items-center gap-6">
+        {navItems.map(item => (
+          <a
+            href={item.href}
+            class:list={[
+              "text-sm font-medium transition-colors",
+              currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href))
+                ? "text-blue-600 dark:text-blue-400"
+                : "text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400",
+            ]}
+          >
+            {item.label}
+          </a>
+        ))}
+        <div class="w-px h-5 bg-slate-200 dark:bg-slate-700"></div>
+        <ThemeToggle />
+      </nav>
+
+      <div class="sm:hidden flex items-center gap-3">
+        <ThemeToggle />
+        <button
+          id="mobile-menu-btn"
+          aria-label="打开导航菜单"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+          class="relative w-9 h-9 flex items-center justify-center rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-all"
+        >
+          <span class="sr-only">菜单</span>
+          <span id="hamburger-icon" class="flex flex-col items-center justify-center gap-[5px] w-[18px] transition-all duration-300">
+            <span class="hamburger-line block w-full h-[2px] bg-slate-600 dark:bg-slate-400 rounded-full transition-all duration-300 origin-center"></span>
+            <span class="hamburger-line block w-full h-[2px] bg-slate-600 dark:bg-slate-400 rounded-full transition-all duration-300 origin-center"></span>
+            <span class="hamburger-line block w-full h-[2px] bg-slate-600 dark:bg-slate-400 rounded-full transition-all duration-300 origin-center"></span>
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile menu panel -->
+  <div
+    id="mobile-menu"
+    class="sm:hidden fixed inset-x-0 top-16 bottom-0 z-40 pointer-events-none"
+    aria-hidden="true"
+  >
+    <div id="mobile-menu-backdrop" class="absolute inset-0 bg-black/0 transition-colors duration-300"></div>
+    <nav
+      id="mobile-menu-panel"
+      class="relative bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-lg translate-y-[-100%] opacity-0 transition-all duration-300 ease-out"
+    >
+      <div class="max-w-4xl mx-auto px-6 py-3">
+        {navItems.map(item => (
+          <a
+            href={item.href}
+            class:list={[
+              "mobile-nav-link block py-3 px-4 rounded-lg text-base font-medium transition-colors",
+              currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href))
+                ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20"
+                : "text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-50 dark:hover:bg-slate-800/50",
+            ]}
+          >
+            {item.label}
+          </a>
+        ))}
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+  function initMobileMenu() {
+    const btn = document.getElementById("mobile-menu-btn");
+    const menu = document.getElementById("mobile-menu");
+    const panel = document.getElementById("mobile-menu-panel");
+    const backdrop = document.getElementById("mobile-menu-backdrop");
+    const lines = document.querySelectorAll(".hamburger-line");
+    if (!btn || !menu || !panel || !backdrop) return;
+
+    let isOpen = false;
+
+    function open() {
+      isOpen = true;
+      btn!.setAttribute("aria-expanded", "true");
+      btn!.setAttribute("aria-label", "关闭导航菜单");
+      menu!.setAttribute("aria-hidden", "false");
+      menu!.classList.remove("pointer-events-none");
+      panel!.classList.remove("translate-y-[-100%]", "opacity-0");
+      panel!.classList.add("translate-y-0", "opacity-100");
+      backdrop!.classList.remove("bg-black/0");
+      backdrop!.classList.add("bg-black/20");
+      // Hamburger → X
+      lines[0]?.classList.add("rotate-45", "translate-y-[7px]");
+      lines[1]?.classList.add("opacity-0", "scale-x-0");
+      lines[2]?.classList.add("-rotate-45", "-translate-y-[7px]");
+      document.body.style.overflow = "hidden";
+    }
+
+    function close() {
+      isOpen = false;
+      btn!.setAttribute("aria-expanded", "false");
+      btn!.setAttribute("aria-label", "打开导航菜单");
+      menu!.setAttribute("aria-hidden", "true");
+      panel!.classList.remove("translate-y-0", "opacity-100");
+      panel!.classList.add("translate-y-[-100%]", "opacity-0");
+      backdrop!.classList.remove("bg-black/20");
+      backdrop!.classList.add("bg-black/0");
+      lines[0]?.classList.remove("rotate-45", "translate-y-[7px]");
+      lines[1]?.classList.remove("opacity-0", "scale-x-0");
+      lines[2]?.classList.remove("-rotate-45", "-translate-y-[7px]");
+      document.body.style.overflow = "";
+      setTimeout(() => {
+        if (!isOpen) menu!.classList.add("pointer-events-none");
+      }, 300);
+    }
+
+    btn.addEventListener("click", () => (isOpen ? close() : open()));
+    backdrop.addEventListener("click", close);
+    document.querySelectorAll(".mobile-nav-link").forEach((link) => {
+      link.addEventListener("click", close);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && isOpen) close();
+    });
+  }
+
+  initMobileMenu();
+  document.addEventListener("astro:after-swap", initMobileMenu);
+</script>

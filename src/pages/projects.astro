@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const projects = [
+  {
+    title: 'Google Scholar MCP',
+    description: '基于 Go 实现的 Google Scholar MCP Server，让 LLM 能够直接检索学术论文、引用信息，为 AI Agent 接入学术搜索能力。',
+    icon: '🎓',
+    link: 'https://github.com/bingshuoguo/google-scholar-mcp',
+    tags: ['Go', 'MCP', 'Scholar']
+  },
+  {
+    title: 'Grafana v8 MCP',
+    description: '为 Grafana 8.4.7 构建的 MCP Server，让 AI Agent 能够查询监控面板、数据源和告警，将可观测性数据接入智能体工作流。',
+    icon: '📊',
+    link: 'https://github.com/bingshuoguo/grafana-v8-mcp',
+    tags: ['Go', 'MCP', 'Grafana']
+  },
+  {
+    title: 'Paper Information Extractor',
+    description: '学术论文信息提取工具，自动从论文中抽取标题、作者、摘要、引用等关键元数据，提升文献管理效率。',
+    icon: '📄',
+    link: 'https://github.com/bingshuoguo/paper-information-extractor',
+    tags: ['Python', 'NLP', 'Research']
+  },
+];
+---
+
+<BaseLayout title="项目 | Echo's Blog" description="Echo 的开源项目 — MCP Server、AI 工具链与学术工具">
+  <div class="py-8">
+    <div class="mb-12 text-center md:text-left">
+      <h1 class="text-3xl font-bold text-slate-900 dark:text-white mb-4">开源项目</h1>
+      <p class="text-slate-600 dark:text-slate-400 text-lg max-w-2xl">
+        这里展示了我参与或主导的一些开源项目。好奇心驱动我不断探索 AI Agent 与 MCP 生态的可能性。
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {projects.map(project => (
+        <a href={project.link} target="_blank" rel="noopener noreferrer" class="group flex pl-2 relative bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-md hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-300">
+          <div class="text-4xl mr-5 shrink-0 transition-transform group-hover:scale-110 group-hover:-rotate-3 duration-300">
+            {project.icon}
+          </div>
+          <div class="flex flex-col h-full">
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+              {project.title}
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-3">
+              {project.description}
+            </p>
+            <div class="mt-auto flex flex-wrap gap-2">
+              {project.tags.map(tag => (
+                <span class="px-2 py-1 text-xs font-medium rounded-md bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div class="absolute top-6 right-6 opacity-0 group-hover:opacity-100 text-blue-500 transition-opacity">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

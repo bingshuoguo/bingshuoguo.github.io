@@ -1,0 +1,13 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-800 antialiased transition-colors duration-300;
+  }
+  .dark body {
+    @apply bg-slate-900 text-slate-300;
+  }
+}

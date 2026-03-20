@@ -1,0 +1,49 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map(post => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const dateStr = post.data.date.toISOString().split('T')[0];
+---
+
+<BaseLayout title={`${post.data.title} | Echo's Blog`} description={post.data.description}>
+  <article class="py-8 max-w-3xl mx-auto">
+    <header class="mb-10 text-center">
+      <div class="flex items-center justify-center gap-4 mb-4">
+        <time datetime={dateStr} class="text-sm font-medium text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">
+          {dateStr}
+        </time>
+      </div>
+      <h1 class="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-6 leading-tight">
+        {post.data.title}
+      </h1>
+      <div class="flex flex-wrap items-center justify-center gap-2">
+        {post.data.tags.map(tag => (
+          <a href={`/tags/${tag}`} class="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+            #{tag}
+          </a>
+        ))}
+      </div>
+    </header>
+
+    <div class="prose prose-slate dark:prose-invert prose-lg max-w-none prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-img:rounded-xl prose-img:shadow-md">
+      <Content />
+    </div>
+
+    <footer class="mt-16 pt-8 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center">
+      <a href="/blog" class="text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 font-medium">
+        <span aria-hidden="true">&larr;</span> 返回博客列表
+      </a>
+      <!-- Add next/prev links here in the future -->
+    </footer>
+  </article>
+</BaseLayout>

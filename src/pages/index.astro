@@ -1,17 +1,91 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import TagCloud from '../components/TagCloud.astro';
+import { getCollection } from 'astro:content';
 
+const allPosts = await getCollection('blog');
+const sortedPosts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 6);
+
+// Calculate tag counts
+const tagCounts: Record<string, number> = {};
+allPosts.forEach(post => {
+  post.data.tags.forEach(tag => {
+    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+  });
+});
+const tags = Object.entries(tagCounts)
+  .map(([name, count]) => ({ name, count }))
+  .sort((a, b) => b.count - a.count)
+  .slice(0, 10);
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title="Echo's Blog" description="郭冰硕 (Echo) 的个人博客 — Agent 研发、MCP 工具链、技术探索">
+  <!-- Hero Section -->
+  <section class="py-16 md:py-24 flex flex-col items-center text-center">
+    <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 dark:text-white mb-6 tracking-tight">
+      Echo's Blog
+    </h1>
+    <p class="text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-10 max-w-2xl">
+      好奇心是引领整个冒险之旅的核心动力。
+    </p>
+    <div class="flex gap-4">
+      <a href="/blog" class="px-6 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors shadow-sm shadow-blue-500/30">
+        浏览博客
+      </a>
+      <a href="/about" class="px-6 py-3 rounded-lg bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 font-medium transition-colors">
+        关于我
+      </a>
+    </div>
+  </section>
+
+  <!-- Latest Posts -->
+  <section class="mb-20">
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="text-2xl font-bold text-slate-900 dark:text-white relative inline-block">
+        最新文章
+        <div class="absolute -bottom-2 left-0 w-1/2 h-1 bg-blue-500 rounded-full"></div>
+      </h2>
+      <a href="/blog" class="text-blue-600 dark:text-blue-400 hover:underline font-medium text-sm flex items-center gap-1">
+        查看全部 <span aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+    
+    {sortedPosts.length > 0 ? (
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {sortedPosts.map(post => (
+          <PostCard 
+            url={`/blog/${post.id}`}
+            title={post.data.title}
+            excerpt={post.data.description}
+            date={post.data.date.toISOString().split('T')[0]}
+            tags={post.data.tags}
+          />
+        ))}
+      </div>
+    ) : (
+      <div class="text-center py-10 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700">
+        <p class="text-slate-500 dark:text-slate-400">还没有发布任何文章。</p>
+      </div>
+    )}
+  </section>
+
+  <!-- Popular Tags -->
+  <section class="mb-10">
+    <div class="flex items-center justify-between mb-8">
+      <h2 class="text-2xl font-bold text-slate-900 dark:text-white relative inline-block">
+        热门标签
+        <div class="absolute -bottom-2 left-0 w-1/2 h-1 bg-blue-500 rounded-full"></div>
+      </h2>
+      <a href="/tags" class="text-blue-600 dark:text-blue-400 hover:underline font-medium text-sm flex items-center gap-1">
+        查看全部 <span aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+    
+    {tags.length > 0 ? (
+      <TagCloud tags={tags} />
+    ) : (
+      <p class="text-slate-500 dark:text-slate-400 text-center py-6">暂无标签</p>
+    )}
+  </section>
+</BaseLayout>
