@@ -23,18 +23,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Node 22 自带 npm 在部分 ubuntu-latest runner 上会触发 “Exit handler never called”
+      # Astro 6 需要 Node >=22.12；不使用 npm cache，避免切换 Node 版本后缓存损坏
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
 
       - name: Install dependencies
         run: npm ci
 
-      # 避免在部分 runner 上 npm script 找不到本地 .bin；npx 显式解析依赖包内 CLI
       - name: Build
-        run: npx astro build
+        run: npm run build
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

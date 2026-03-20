@@ -13,7 +13,7 @@ Echo（郭冰硕）的个人站点，使用 [Astro](https://astro.build/) + Tail
 | `npm run build` | 构建到 `./dist/` |
 | `npm run preview` | 本地预览生产构建 |
 
-需要 **Node.js ≥ 20**（与 GitHub Actions 构建一致）。
+需要 **Node.js ≥ 22.12**（与 Astro 6 / GitHub Actions 一致）。
 
 ## 部署
 
