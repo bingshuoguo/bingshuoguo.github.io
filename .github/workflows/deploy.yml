@@ -23,16 +23,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Astro 6 需要 Node >=22.12；不使用 npm cache，避免切换 Node 版本后缓存损坏
+      # Astro 6 需要 Node >=22.12；GitHub-hosted runner 上的 Node 22/npm
+      # 组合在本仓库依赖安装阶段会触发 npm cli 崩溃，因此切到 Node 24。
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "24"
 
       - name: Install dependencies
-        # GitHub-hosted runners occasionally hit an npm cli bug with `npm ci`
-        # on this dependency set; `npm install` is stable and still honors
-        # package-lock.json for reproducible installs here.
+        # Avoid the npm cli crash seen on the runner's default Node 22 image.
         run: npm install --no-audit --no-fund
 
       - name: Build
