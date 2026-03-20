@@ -4,7 +4,7 @@ import PostCard from '../components/PostCard.astro';
 import TagCloud from '../components/TagCloud.astro';
 import { getCollection } from 'astro:content';
 
-const allPosts = await getCollection('blog');
+const allPosts = (await getCollection('blog')).filter((post) => post.id !== 'hello-world');
 const sortedPosts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 6);
 
 // Calculate tag counts
