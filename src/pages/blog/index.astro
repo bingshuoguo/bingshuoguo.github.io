@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog');
+const sortedPosts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<BaseLayout title="博客 | Echo's Blog" description="所有的博客文章">
+  <div class="py-8">
+    <div class="mb-12">
+      <h1 class="text-3xl font-bold text-slate-900 dark:text-white mb-4">博客</h1>
+      <p class="text-slate-600 dark:text-slate-400 text-lg">
+        记录技术探索、随笔感想与生活点滴。共 {allPosts.length} 篇文章。
+      </p>
+    </div>
+
+    {sortedPosts.length > 0 ? (
+      <div class="flex flex-col gap-8">
+        {sortedPosts.map(post => (
+          <PostCard 
+            url={`/blog/${post.id}`}
+            title={post.data.title}
+            excerpt={post.data.description}
+            date={post.data.date.toISOString().split('T')[0]}
+            tags={post.data.tags}
+          />
+        ))}
+      </div>
+    ) : (
+      <div class="text-center py-20 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700">
+        <p class="text-slate-500 dark:text-slate-400">目前还没有发布任何文章。</p>
+      </div>
+    )}
+  </div>
+</BaseLayout>

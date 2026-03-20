@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TagCloud from '../../components/TagCloud.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog');
+const tagsData: Record<string, number> = {};
+
+allPosts.forEach(post => {
+  post.data.tags.forEach(tag => {
+    tagsData[tag] = (tagsData[tag] || 0) + 1;
+  });
+});
+
+const tags = Object.entries(tagsData)
+  .map(([name, count]) => ({ name, count }))
+  .sort((a, b) => b.count - a.count);
+---
+
+<BaseLayout title="热门标签 | Echo's Blog" description="所有博客文章的分类标签">
+  <div class="py-8">
+    <div class="mb-12">
+      <h1 class="text-3xl font-bold text-slate-900 dark:text-white mb-4">标签云</h1>
+      <p class="text-slate-600 dark:text-slate-400 text-lg">
+        按标签浏览感兴趣的文章。共找到 {tags.length} 个标签。
+      </p>
+    </div>
+
+    {tags.length > 0 ? (
+      <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm">
+        <TagCloud tags={tags} />
+      </div>
+    ) : (
+      <div class="text-center py-20 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700">
+        <p class="text-slate-500 dark:text-slate-400">目前还没有任何标签。</p>
+      </div>
+    )}
+  </div>
+</BaseLayout>

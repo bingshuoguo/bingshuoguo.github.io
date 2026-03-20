@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog');
+  const uniqueTags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
+
+  return uniqueTags.map((tag) => {
+    const filteredPosts = allPosts.filter((post) => post.data.tags.includes(tag));
+    return {
+      params: { tag },
+      props: { posts: filteredPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()) },
+    };
+  });
+}
+
+const { tag } = Astro.params;
+const { posts } = Astro.props;
+---
+
+<BaseLayout title={`标签: ${tag} | Echo's Blog`} description={`包含标签 ${tag} 的所有文章`}>
+  <div class="py-8">
+    <div class="mb-12">
+      <a href="/tags" class="text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 font-medium mb-6">
+        <span aria-hidden="true">&larr;</span> 返回所有标签
+      </a>
+      <h1 class="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+        带有 <span class="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-3 py-1 rounded-lg border border-blue-200 dark:border-blue-800 ml-2">#{tag}</span> 的文章
+      </h1>
+      <p class="text-slate-600 dark:text-slate-400 text-lg">
+        共找到 {posts.length} 篇文章。
+      </p>
+    </div>
+
+    <div class="flex flex-col gap-8">
+      {posts.map(post => (
+        <PostCard 
+          url={`/blog/${post.id}`}
+          title={post.data.title}
+          excerpt={post.data.description}
+          date={post.data.date.toISOString().split('T')[0]}
+          tags={post.data.tags}
+        />
+      ))}
+    </div>
+  </div>
+</BaseLayout>
