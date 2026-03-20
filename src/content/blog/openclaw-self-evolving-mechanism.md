@@ -34,13 +34,7 @@ OpenClaw 的"自进化"不是模型权重更新，也不是在线微调。它的
 
 它的核心闭环可以压缩成一句话：
 
-```mermaid
-graph LR
-    A["外部状态沉淀"] --> B["Prompt / Tool 注入"]
-    B --> C["后续运行复用"]
-    C --> D["行为持续变化"]
-    D --> A
-```
+![核心演化闭环](/images/blog/图1核心演化闭环.drawio.png)
 
 从源码和文档看，这个闭环主要由四个子系统构成：
 
@@ -55,14 +49,7 @@ graph LR
 
 把与"自进化"最相关的部分抽出来，结构大致如下：
 
-```mermaid
-graph TD
-    INPUT["用户消息 / 外部事件"] --> RUNTIME["Session / Agent Runtime<br/>system prompt · tools · lanes"]
-    RUNTIME --> MEM["🟢 Memory<br/>MEMORY.md · memory/YYYY-MM-DD.md<br/>memory_search / memory_get<br/>pre-compaction flush"]
-    RUNTIME --> SKILL["🟠 Skills<br/>bundled / managed / workspace<br/>available_skills 注入<br/>watcher 热刷新"]
-    RUNTIME --> HOOK["🟣 Hooks<br/>session-memory"]
-    RUNTIME --> HB["🔴 Heartbeat<br/>requestHeartbeatNow()<br/>优先级队列 · 独立 lane"]
-```
+![总体架构](/images/blog/图2-总体架构.drawio.png)
 
 这几层不是互相独立的功能点，而是一个闭环系统：
 
@@ -285,35 +272,15 @@ Heartbeat 不是简单定时器，而是带调度策略的唤醒层：
 
 ### 知识闭环
 
-```mermaid
-graph TD
-    A["用户交互 / 工具执行"] --> B["Session Transcript 落盘"]
-    B --> C["/new 或 /reset → session-memory hook 归档"]
-    B --> D["接近 compaction → memory flush 写入 daily memory"]
-    C --> E["memory/*.md / MEMORY.md<br/>外部记忆资产"]
-    D --> E
-    E --> F["bootstrap 注入 / memory_search 检索"]
-    F --> G["未来回答、判断、行动发生变化"]
-```
+![知识闭环](/images/blog/图3-知识闭环.drawio.png)
 
 ### 行为闭环
 
-```mermaid
-graph TD
-    A["用户需求 / 问题类型变化"] --> B["新增或修改 SKILL.md / AGENTS.md / TOOLS.md"]
-    B --> C["watcher / snapshot version 刷新"]
-    C --> D["available_skills 与 bootstrap 内容变化"]
-    D --> E["未来相似任务采用新的步骤、工具和约束"]
-```
+![行为闭环](/images/blog/图4-行为闭环.drawio.png)
 
 ### 调度闭环
 
-```mermaid
-graph TD
-    A["系统事件 / 定时触发 / Hook / Cron"] --> B["requestHeartbeatNow() / heartbeat queue"]
-    B --> C["后台 Agent Turn 运行"]
-    C --> D["触发巡检、整理、提醒、写回<br/>或继续消费外部状态"]
-```
+![调度闭环](/images/blog/图5-调度闭环.drawio.png)
 
 单看每个模块都不新鲜。但连起来看，OpenClaw 已经具备了一个相当成熟的运行时演化系统雏形：它能积累、能回忆、能热更新、能主动运行、还能在一定边界内自写回。
 
