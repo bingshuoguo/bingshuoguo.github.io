@@ -31,7 +31,7 @@
 ## 3. 仓库与首次上传
 
 1. 在 GitHub 新建仓库：**Repository name** 填 `bingshuoguo.github.io`，**Public**，**不要**勾选「Initialize with README」（若本地已有代码）。
-2. 本地（在 PersonWeb 目录）：
+2. 本地（在 `bingshuoguo.github.io` 项目目录）：
 
    ```bash
    git remote add origin https://github.com/bingshuoguo/bingshuoguo.github.io.git
@@ -55,7 +55,7 @@
 
 - **`site`**（已在 `astro.config.mjs`）：`https://bingshuoguo.github.io`  
   用于 canonical、sitemap、RSS 等绝对 URL；用户站点**无需** `base`。
-- 若将来改用 **Project Pages**（仓库名如 `PersonWeb`，地址为 `https://bingshuoguo.github.io/PersonWeb/`），才需要设置 `base: '/PersonWeb'` 并同步调整 `site`。
+- 若将来改用 **Project Pages**（仓库名如 `my-site`，地址为 `https://bingshuoguo.github.io/my-site/`），才需要设置 `base: '/my-site'` 并同步调整 `site`。
 
 ## 6. 常见问题
 
