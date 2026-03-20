@@ -270,17 +270,20 @@ Heartbeat 不是简单定时器，而是带调度策略的唤醒层：
 
 ## 六、拼起来看：三个闭环
 
-### 知识闭环
-
-![知识闭环](/images/blog/图3-知识闭环.drawio.png)
-
-### 行为闭环
-
-![行为闭环](/images/blog/图4-行为闭环.drawio.png)
-
-### 调度闭环
-
-![调度闭环](/images/blog/图5-调度闭环.drawio.png)
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:1.5rem 0">
+<figure style="margin:0;text-align:center">
+<img src="/images/blog/图3-知识闭环.drawio.png" alt="知识闭环" style="border-radius:0.75rem;box-shadow:0 4px 6px -1px rgb(0 0 0/0.1)" />
+<figcaption style="font-size:0.875rem;color:#64748b;margin-top:0.5rem"><b>知识闭环</b></figcaption>
+</figure>
+<figure style="margin:0;text-align:center">
+<img src="/images/blog/图4-行为闭环.drawio.png" alt="行为闭环" style="border-radius:0.75rem;box-shadow:0 4px 6px -1px rgb(0 0 0/0.1)" />
+<figcaption style="font-size:0.875rem;color:#64748b;margin-top:0.5rem"><b>行为闭环</b></figcaption>
+</figure>
+<figure style="margin:0;text-align:center">
+<img src="/images/blog/图5-调度闭环.drawio.png" alt="调度闭环" style="border-radius:0.75rem;box-shadow:0 4px 6px -1px rgb(0 0 0/0.1)" />
+<figcaption style="font-size:0.875rem;color:#64748b;margin-top:0.5rem"><b>调度闭环</b></figcaption>
+</figure>
+</div>
 
 单看每个模块都不新鲜。但连起来看，OpenClaw 已经具备了一个相当成熟的运行时演化系统雏形：它能积累、能回忆、能热更新、能主动运行、还能在一定边界内自写回。
 
