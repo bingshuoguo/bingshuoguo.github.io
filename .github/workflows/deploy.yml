@@ -28,13 +28,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: npm
 
       - name: Install dependencies
         run: npm ci
 
+      # 避免在部分 runner 上 npm script 找不到本地 .bin；npx 显式解析依赖包内 CLI
       - name: Build
-        run: npm run build
+        run: npx astro build
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
